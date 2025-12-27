@@ -1,4 +1,4 @@
-# RAG-Based Audio–Video Knowledge Extraction Assistant
+# RAG-Based AI Assistant
 
 This project converts video recordings into a searchable, AI-powered knowledge system using a Retrieval-Augmented Generation (RAG) pipeline.
 
