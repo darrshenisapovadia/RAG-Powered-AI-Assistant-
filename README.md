@@ -1,85 +1,129 @@
-🔊 RAG-Based Audio–Video Knowledge Extraction Assistant
-Transform your own recordings into a searchable, intelligent AI knowledge system.
+# RAG-Based Audio–Video Knowledge Extraction Assistant
 
-This project enables you to convert any set of videos into text, index them using vector embeddings, and query them through an LLM that retrieves information grounded in your data.
+This project converts video recordings into a searchable, AI-powered knowledge system using a Retrieval-Augmented Generation (RAG) pipeline.
 
-Once your dataset is processed, you can ask questions like:
-- “Where was this specific topic mentioned?”
-- “Which part talked about X?”
-- “Summarize the key points related to Y.”
+It allows you to transcribe videos, generate vector embeddings from the content, and query the data using a Large Language Model (LLM) that provides answers grounded strictly in your own recordings.
 
-The assistant uses Retrieval-Augmented Generation (RAG) to find the most relevant segments from your files and generate accurate, context-aware answers.
+---
 
-📁 How to Use This Assistant on Your Own Data
-Below is a clean, professional, and complete workflow.
+## What This Project Does
 
-✅ Step 1 — Add Your Video Files: Place all your raw video recordings inside the /videos directory.
-Supported input formats: .mp4, .mov, .mkv,.avi
+Once your data is processed, you can ask questions such as:
+- Where was a specific topic mentioned?
+- Which video and timestamp discusses a particular concept?
+- Summarize all content related to a given topic.
+
+The system retrieves the most relevant transcript segments using vector similarity search and generates accurate, context-aware responses using an LLM.
+
+---
+
+## Project Workflow Overview
+
+Videos → Audio → Transcripts → Embeddings → RAG Querying → AI Answers
+
+---
+
+## How to Use This Project
+
+### Step 1 — Add Video Files
+
+Place all raw video recordings inside the `videos/` directory.
 
 
-🎧 Step 2 — Extract Audio (Convert Video → MP3)
+---
 
-Run the conversion script:
-python video_to_mp3.py
+### Step 2 — Convert Video to Audio (MP3)
 
-This step will:
+Run the video-to-audio conversion script:
 
-- Scan the /videos folder
-- Convert each video into an .mp3 file
-- Save all audio outputs insidethe /audio directory
-- Preserve naming structure for consistency
+```bash
+python process_video.py
+```
 
-Why?
-👉 Processing audio is significantly faster and more efficient for transcription and embedding.
+This step:
+- Scans the `videos/` directory
+- Converts each video file into an MP3
+- Saves outputs to the `audios/` directory
+- Preserves naming structure for traceability
 
-📝 Step 3 — Generate Text Data (MP3 → JSON)
+Processing audio instead of video significantly improves transcription speed and efficiency.
 
-- Use the transcription script to convert all audio files into structured JSON files:
-- python mp3_to_json.py
+---
+
+### Step 3 — Generate Transcripts (MP3 to JSON)
+
+Convert audio files into structured transcript chunks:
+
+```bash
+python create_chunks.py
+```
 
 Each generated JSON file contains:
+- Timestamped text segments
+- Video number and title metadata
+- Cleaned, translated transcript text
 
-- Cleaned transcript text
-- Timestamped segments
-- Structured grouping for downstream vectorization
-- Your /json folder will now contain text-based versions of all your recordings.
+The `jsons/` directory will now contain text-based versions of all recordings.
 
-🧠 Step 4 — Create Vector Embeddings (JSON → Embedding Store)
+---
 
-Convert the JSON transcripts into vector embeddings using the preprocessing script:
-- python preprocess_json.py
+### Step 4 — Create Vector Embeddings
 
-This step generates: 
-- A dataframe with Chunked text, Associated timestamps, Embedding vectors and Metadata fields
-- A Joblib (.pkl) file that stores your embedding index efficiently
-(e.g., embeddings_store.pkl)
+Generate embeddings from transcript chunks:
 
-Why?
-👉 These embeddings allow the system to search and retrieve exactly the portions of your dataset that relate to a user query.
+```bash
+python read_chunks.py
+```
 
-🤖 Step 5 — Ask Questions Using the LLM (RAG Stage)
+This step produces:
+- A dataframe containing text chunks, timestamps, metadata, and embeddings
+- A serialized embedding index stored as `embeddings.joblib`
 
-- Load your embedding store:
-      from joblib import load
-      embeddings_df = load("embeddings_store.pkl")
+These embeddings enable semantic search across your entire video dataset.
 
-Now the assistant will:
-  - Take the user’s question
-  - Retrieve the most relevant text chunks using similarity search
-  - Construct a context-rich prompt
-  - Send this prompt to the LLM
-  - Return an accurate answer grounded in your original data
+---
 
-You can ask questions such as:
-- “Where is X mentioned?”
-- “Summarize all points related to Y.”
-- “Find portions where Z is discussed.”
-- “Give a structured explanation of everything related to Topic A.”
+### Step 5 — Query the System (RAG Inference)
 
-📊 End-to-End Workflow Overview: Videos → Audio → Text → Embeddings → RAG Querying → AI Answers
+Ask questions using the retrieval and generation pipeline:
 
-⚙️ Tips for Best Output Quality
-- Use clear audio for better transcription
-- Keep filenames descriptive
-- Re-run the embedding script whenever you add new files
-- Maintain a consistent directory structure
+```bash
+python process_incoming.py
+```
+
+The system will:
+- Embed the user query
+- Retrieve the most relevant transcript chunks using cosine similarity
+- Build a context-rich prompt
+- Generate a grounded answer using the LLM
+
+Example questions:
+- Where is topic X discussed?
+- Summarize all content related to Y
+- Identify videos and timestamps where Z appears
+
+---
+
+## Output Files
+
+- `embeddings.joblib` – Vector embedding index
+- `prompt.txt` – Prompt sent to the LLM
+- `response.txt` – Final generated answer
+
+---
+
+## Tips for Best Results
+
+- Use clear, noise-free audio recordings
+- Keep filenames descriptive and consistent
+- Re-run the embedding step when new files are added
+- Maintain the expected directory structure
+
+---
+
+## Use Cases
+
+- Course and lecture search
+- Meeting and interview analysis
+- Podcast and video content indexing
+- Personal knowledge bases built from recordings
