@@ -4,6 +4,8 @@ This project converts video recordings into a searchable, AI-powered knowledge s
 
 It allows you to transcribe videos, generate vector embeddings from the content, and query the data using a Large Language Model (LLM) that provides answers grounded strictly in your own recordings.
 
+Video Demo: https://drive.google.com/file/d/1oYvJy0nKtTEBrOycORXxW1qGcKXlsMmz/view?usp=sharing
+
 ---
 
 ## What This Project Does
